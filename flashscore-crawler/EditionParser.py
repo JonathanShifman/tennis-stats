@@ -1,5 +1,7 @@
 from selenium import webdriver
 from bs4 import BeautifulSoup
+from enum import Enum
+import RoundMappings
 
 
 class UnexpectedStartOfBracket(Exception):
@@ -8,6 +10,16 @@ class UnexpectedStartOfBracket(Exception):
 
 class UnexpectedStartOfRound(Exception):
     pass
+
+
+class UnexpectedMatch(Exception):
+    pass
+
+
+class Row(Enum):
+    Bracket = 1
+    Round = 2
+    Match = 3
 
 
 def get_edition_source(edition_string):
@@ -44,26 +56,17 @@ class EditionParser:
         self.current_round = None
         self.edition_dict = dict()
 
-    def can_open_new_bracket(self, bracket_name):
+    def get_possible_next_rows(self):
         if self.current_bracket is None:
-            return True
-        if bracket_name in self.edition_dict['brackets'] or self.expecting_another_match_row():
-            return False
-        return True
-
-    def can_open_new_round(self, round_name):
-        if self.current_bracket is None:
-            return False
+            return {Row.Bracket}
         if self.current_round is None:
-            return True
-        if round_name in self.current_bracket or self.expecting_another_match_row():
-            return False
-        return True
-
-    def expecting_another_match_row(self):
-        if self.current_round is None:
-            return False
-        return True
+            return {Row.Round}
+        if self.current_bracket['name'] == 'Main':
+            expected_num_of_matches_in_round = pow(2, RoundMappings.round_name_to_id[self.current_round['name']] - 1)
+            if len(self.current_round['matches']) == expected_num_of_matches_in_round:
+                return {Row.Bracket, Row.Round}
+            return {Row.Match}
+        return {Row.Bracket, Row.Round, Row.Match}
 
     def generate_edition_json(self, edition_string):
         edition_source = get_edition_source(edition_string)
@@ -75,23 +78,34 @@ class EditionParser:
         self.edition_dict = dict()
         self.edition_dict['brackets'] = dict()
         for element in relevant_elements:
+            possible_next_rows = self.get_possible_next_rows()
             if 'league' in element['class']:
-                bracket_name = get_bracket_name(element)
-                if self.can_open_new_bracket(bracket_name):
+                print 'Attempting to open bracket'
+                if Row.Bracket in possible_next_rows:
+                    bracket_name = get_bracket_name(element)
                     self.current_bracket = dict()
+                    self.current_bracket['name'] = bracket_name
+                    self.current_bracket['rounds'] = dict()
                     self.edition_dict['brackets'][bracket_name] = self.current_bracket
+                    self.current_round = None
                 else:
                     raise UnexpectedStartOfBracket
             elif 'event_round' in element['class']:
-                round_name = get_round_name(element)
-                if self.can_open_new_round(round_name):
-                    self.current_round = []
-                    self.current_bracket[round_name] = self.current_round
+                print 'Attempting to open round'
+                if Row.Round in possible_next_rows:
+                    round_name = get_round_name(element)
+                    self.current_round = dict()
+                    self.current_round['name'] = round_name
+                    self.current_round['matches'] = []
+                    self.current_bracket['rounds'][round_name] = self.current_round
                 else:
                     raise UnexpectedStartOfRound
             else:  # 'odd' or 'even' in element['class']
-                if self.expecting_another_match_row():
+                print 'Attempting to parse match'
+                if Row.Match in possible_next_rows:
                     match_dict = parse_match_row(element)
-                    self.current_round.append(match_dict)
+                    self.current_round['matches'].append(match_dict)
+                else:
+                    raise UnexpectedMatch
 
 
