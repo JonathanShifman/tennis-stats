@@ -1,4 +1,4 @@
-from GameHistory import GameHistory
+from classes.GameHistory import GameHistory
 
 
 def parse_point_score_text(point_score_text):

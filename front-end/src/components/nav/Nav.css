@@ -1,0 +1,14 @@
+.nav {
+  display: flex;
+}
+.nav-item {
+  padding: 20px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.nav-item:hover {
+  font-weight: bold;
+}
+.selected-nav-item {
+  border-bottom: 2px solid white;
+}

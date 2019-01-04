@@ -1,4 +1,4 @@
-from MatchHistory import MatchHistory
+from classes.MatchHistory import MatchHistory
 import SetParser
 from selenium import webdriver
 from bs4 import BeautifulSoup

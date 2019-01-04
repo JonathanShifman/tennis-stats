@@ -1,4 +1,4 @@
-from SetHistory import SetHistory
+from classes.SetHistory import SetHistory
 import GameParser
 
 
