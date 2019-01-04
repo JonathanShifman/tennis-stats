@@ -21,10 +21,6 @@ class Row(Enum):
     Match = 3
 
 
-def get_edition_source(browser, edition_string):
-    return BeautifulSoup(SourceReader.get_edition_raw_sources_dict(browser, edition_string)['results'], 'html.parser')
-
-
 def get_bracket_name(tr_element):
     if 'Qualification' in tr_element.find('span', {'class': 'tournament_part'}).text:
         return 'Qual'
@@ -45,9 +41,7 @@ def parse_match_row(match_tr_element):
     return match_dict
 
 
-def generate_edition_json(edition_source_file_path):
-    with open(edition_source_file_path, 'rb') as f:
-        edition_source = BeautifulSoup(f.read(), 'html.parser')
+def parse_edition(edition_sources):
     tr_classes = {'league', 'event_round', 'odd', 'even'}
     relevant_elements = edition_source.find_all(lambda element:
                                                 (element.name == 'tr' and 'class' in element.attrs and len(
