@@ -26,13 +26,30 @@ def get_show_more_matches_link(browser):
         return None
 
 
+def get_num_of_matches(browser):
+    soup = BeautifulSoup(browser.page_source, "html.parser")
+    return len(soup.find_all("tr", {"class": "stage-finished"}))
+
+
 def get_results_tab_source(browser, edition_string):
     url = get_edition_url(edition_string) + 'results/'
     browser.get(url)
     show_more_matches_link = get_show_more_matches_link(browser)
     if show_more_matches_link is not None:
+        num_of_matches_before_click = get_num_of_matches(browser)
         show_more_matches_link.click()
-        time.sleep(5) # FIXME: Check that there are changes
+        seconds_waited = 0
+        matches_loaded = False
+        wait_interval_in_secs = 0.5
+        while not matches_loaded and seconds_waited < 10:
+            print("Waiting")
+            time.sleep(wait_interval_in_secs)
+            seconds_waited += wait_interval_in_secs
+            num_of_matches_after_click = get_num_of_matches(browser)
+            if num_of_matches_after_click > num_of_matches_before_click:
+                matches_loaded = True
+        if not matches_loaded:
+            raise Exception("Waited too long for matches to load")
     return browser.page_source
 
 
