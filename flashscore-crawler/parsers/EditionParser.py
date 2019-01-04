@@ -1,6 +1,4 @@
-from bs4 import BeautifulSoup
 from enum import Enum
-import SourceReader
 
 
 class UnexpectedStartOfBracket(Exception):

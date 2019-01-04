@@ -1,4 +1,4 @@
-import Utils
+from utils import Utils
 from bs4 import BeautifulSoup
 import time
 
@@ -51,7 +51,7 @@ def get_bubble_suffixes(soup):
 
 
 def get_bracket_sources_from_tab_source(browser, tab_source, tab_url):
-    tab_soup = BeautifulSoup(tab_source)
+    tab_soup = BeautifulSoup(tab_source, "html.parser")
     bubble_suffixes = get_bubble_suffixes(tab_soup)
     bracket_sources = [get_source(browser, tab_url + bubble_suffix) for bubble_suffix in bubble_suffixes]
     return bracket_sources
