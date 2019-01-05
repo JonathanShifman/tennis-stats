@@ -1,4 +1,4 @@
-from utils import SourceReader
+from utils import EditionSourceReader
 import time
 from selenium import webdriver
 import os
@@ -10,10 +10,10 @@ with open('resources/tournament-names.txt', 'r') as f:
 browser = webdriver.Chrome()
 for year in range(2018, 2019):
     for tournament_name in tournament_names:
-        print("Parsing " + str(year) + " " + tournament_name)
+        print("Scraping " + str(year) + " " + tournament_name)
         edition_string = tournament_name + '-' + str(year)
-        results_source = SourceReader.get_results_tab_source(browser, edition_string)
-        bracket_sources = SourceReader.get_bracket_sources(browser, edition_string)
+        results_source = EditionSourceReader.get_results_tab_source(browser, edition_string)
+        bracket_sources = EditionSourceReader.get_bracket_sources(browser, edition_string)
 
         dir_name = str(year) + ',' + tournament_name
         dir_path = 'output/' + dir_name + '/'

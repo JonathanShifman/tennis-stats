@@ -3,17 +3,13 @@ from bs4 import BeautifulSoup
 import time
 
 
-def get_edition_url(edition_string):
-    return 'https://www.flashscore.com/tennis/atp-singles/' + edition_string + '/'
-
-
 def get_source(browser, url):
     browser.get(url)
     return browser.page_source
 
 
 def get_tab_source(browser, edition_string, tab_name):
-    url = get_edition_url(edition_string) + tab_name + '/'
+    url = Utils.get_edition_url(edition_string) + tab_name + '/'
     return get_source(browser, url)
 
 
@@ -32,7 +28,7 @@ def get_num_of_matches(browser):
 
 
 def get_results_tab_source(browser, edition_string):
-    url = get_edition_url(edition_string) + 'results/'
+    url = Utils.get_edition_url(edition_string) + 'results/'
     browser.get(url)
     show_more_matches_link = get_show_more_matches_link(browser)
     if show_more_matches_link is not None:
@@ -75,7 +71,7 @@ def get_bracket_sources_from_tab_source(browser, tab_source, tab_url):
 
 
 def get_bracket_sources(browser, edition_string):
-    edition_url = get_edition_url(edition_string)
+    edition_url = Utils.get_edition_url(edition_string)
     draw_source = get_source(browser, edition_url + "draw")
     standings_source = get_source(browser, edition_url + "standings")
     relevant_tab_name, relevant_tab_source = determine_relevant_tab_source(draw_source, standings_source)
