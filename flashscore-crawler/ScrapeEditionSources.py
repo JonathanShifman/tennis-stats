@@ -5,7 +5,7 @@ import os
 import traceback
 
 with open('resources/tournament-names.txt', 'r') as f:
-    tournament_names = [tournament_name.strip() for tournament_name in f.readlines()][40:]
+    tournament_names = [tournament_name.strip() for tournament_name in f.readlines()]
     # tournament_names = ['acapulco']
 
 browser = webdriver.Chrome()

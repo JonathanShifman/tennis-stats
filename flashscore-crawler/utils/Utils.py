@@ -24,5 +24,9 @@ def get_match_url(match_id):
     return domain + "match/" + match_id + "/"
 
 
+def get_archive_url(tournament_name):
+    return domain + "tennis/atp-singles/" + tournament_name + "/archive/"
+
+
 def print_divider():
     print("---------------------------------")
