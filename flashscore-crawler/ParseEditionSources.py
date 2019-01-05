@@ -4,12 +4,15 @@ from classes.Edition import Edition
 from classes.Bracket import Bracket
 from classes.Round import Round
 import pickle
+import traceback
 
 
 def get_match_id(match_element):
     link_elements = match_element.find_all("a", {"title": "Click for match detail!"})
-    if len(link_elements) != 1:
+    if len(link_elements) > 1:
         raise Exception("Unexpected number of match detail links: " + str(len(link_elements)))
+    if len(link_elements) == 0:
+        return None
 
     link_element = link_elements[0]
     id_attr = link_element.attrs["id"]
@@ -32,7 +35,8 @@ def parse_round_element(round_element):
 
     for match_element in match_elements:
         match_id = get_match_id(match_element)
-        edition_round.match_ids.append(match_id)
+        if match_id is not None:
+            edition_round.match_ids.append(match_id)
     return edition_round
 
 
@@ -51,7 +55,12 @@ def parse_bracket(bracket_soup):
 def parse_edition(year, tournament_name):
     print("Parsing " + str(year) + " " + tournament_name)
     edition = Edition()
-    dir_name = "output/" + str(year) + "," + tournament_name + "/"
+    dir_name = "output/editions/" + str(year) + "," + tournament_name + "/"
+    if not os.path.exists(dir_name):
+        # raise Exception("Sources dir not found")
+        return
+    if os.path.exists(dir_name + "edition.pkl"):
+        return
     bracket_file_names = [file_name for file_name in os.listdir(dir_name) if "bracket" in file_name]
     for bracket_file_name in bracket_file_names:
         bracket_file_path = dir_name + bracket_file_name
@@ -62,4 +71,13 @@ def parse_edition(year, tournament_name):
     pickle.dump(edition, open(dir_name + "edition.pkl", "wb"))
 
 
-parse_edition(2018, 'australian-open')
+with open('resources/tournament-names.txt', 'r') as f:
+    tournament_names = [tournament_name.strip() for tournament_name in f.readlines()]
+    # tournament_names = ["antalya"]
+
+for tournament_name in tournament_names:
+    try:
+        parse_edition(str(2018), tournament_name)
+    except Exception as e:
+        print("Failed to parse edition: " + e.message)
+        traceback.print_exc()

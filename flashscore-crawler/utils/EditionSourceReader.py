@@ -1,6 +1,9 @@
-from utils import Utils
+from utils import Utils, PageEnforcer
 from bs4 import BeautifulSoup
 import time
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 def get_tab_source(browser, edition_string, tab_name):
@@ -17,30 +20,25 @@ def get_show_more_matches_link(browser):
         return None
 
 
-def get_num_of_matches(browser):
-    soup = BeautifulSoup(browser.page_source, "html.parser")
-    return len(soup.find_all("tr", {"class": "stage-finished"}))
-
-
 def get_results_tab_source(browser, edition_string):
     url = Utils.get_edition_url(edition_string) + 'results/'
     browser.get(url)
+    if not Utils.found_page(browser.page_source):
+        raise Exception("Results tab not found")
+    PageEnforcer.enforce(browser, PageEnforcer.edition_results_loaded, "Edition results loaded")
     show_more_matches_link = get_show_more_matches_link(browser)
     if show_more_matches_link is not None:
-        num_of_matches_before_click = get_num_of_matches(browser)
-        show_more_matches_link.click()
-        seconds_waited = 0
-        matches_loaded = False
-        wait_interval_in_secs = 0.5
-        while not matches_loaded and seconds_waited < 10:
-            print("Waiting")
-            time.sleep(wait_interval_in_secs)
-            seconds_waited += wait_interval_in_secs
-            num_of_matches_after_click = get_num_of_matches(browser)
-            if num_of_matches_after_click > num_of_matches_before_click:
-                matches_loaded = True
-        if not matches_loaded:
-            raise Exception("Waited too long for matches to load")
+        soup = BeautifulSoup(browser.page_source, "html.parser")
+        num_of_matches_before_click = len(soup.find_all("tr", {"class": "stage-finished"}))
+        try:
+            show_more_matches_link.click()
+            time.sleep(5)
+        except Exception as e:
+            return browser.page_source
+
+        PageEnforcer.enforce(browser, PageEnforcer.edition_more_results_loaded, "Edition more results loaded",
+                             10, 1, 5, num_of_matches_before_click)
+
     return browser.page_source
 
 
@@ -61,7 +59,15 @@ def get_bubble_suffixes(soup):
 def get_bracket_sources_from_tab_source(browser, tab_source, tab_url):
     tab_soup = BeautifulSoup(tab_source, "html.parser")
     bubble_suffixes = get_bubble_suffixes(tab_soup)
-    bracket_sources = [Utils.get_source(browser, tab_url + bubble_suffix) for bubble_suffix in bubble_suffixes]
+    # bracket_sources = [Utils.get_source(browser, tab_url + bubble_suffix, PageEnforcer.edition_bracket_loaded,
+    #                                     "Edition bracket loaded") for bubble_suffix in bubble_suffixes]
+
+    bracket_sources = []
+    for bubble_suffix in bubble_suffixes:
+        browser.get(tab_url + bubble_suffix)
+        WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "div.match")))
+        bracket_sources.append(browser.page_source)
+
     return bracket_sources
 
 

@@ -20,7 +20,7 @@ def scrape_match(browser, match_id):
 
 def scrape_matches_from_edition(browser, year, tournament_name):
     edition_dir_name = str(year) + "," + tournament_name
-    edition = pickle.load(open("output/" + edition_dir_name + "/edition.pkl", "rb"))
+    edition = pickle.load(open("output/editions/" + edition_dir_name + "/edition.pkl", "rb"))
     for bracket in edition.brackets:
         for edition_round in bracket.rounds:
             for match_id in edition_round.match_ids:
