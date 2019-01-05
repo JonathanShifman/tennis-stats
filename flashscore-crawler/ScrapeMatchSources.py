@@ -1,22 +1,33 @@
 from utils import MatchSourceReader
 from selenium import webdriver
 import os
+import pickle
+import time
 
-match_id = "hUHPU31G"
+
+def scrape_match(browser, match_id):
+    summary_source, history_source = MatchSourceReader.get_match_sources(browser, match_id)
+    dir_path = 'output/matches/' + match_id + '/'
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
+
+    with open(dir_path + 'summary.txt', 'wb') as output_file:
+        output_file.write(summary_source.encode('utf8'))
+
+    with open(dir_path + 'history.txt', 'wb') as output_file:
+        output_file.write(history_source.encode('utf8'))
+
+
+def scrape_matches_from_edition(browser, year, tournament_name):
+    edition_dir_name = str(year) + "," + tournament_name
+    edition = pickle.load(open("output/" + edition_dir_name + "/edition.pkl", "rb"))
+    for bracket in edition.brackets:
+        for edition_round in bracket.rounds:
+            for match_id in edition_round.match_ids:
+                scrape_match(browser, match_id)
+                time.sleep(3)
+
+
 browser = webdriver.Chrome()
-summary_source, set_sources = MatchSourceReader.get_match_sources(browser, match_id)
-
-dir_path = 'output/matches/' + match_id + '/'
-if not os.path.exists(dir_path):
-    os.makedirs(dir_path)
-
-with open(dir_path + 'summary.txt', 'wb') as output_file:
-    output_file.write(summary_source.encode('utf8'))
-
-set_number = 1
-for set_source in set_sources:
-    with open(dir_path + 'set' + str(set_number) + '.txt', 'wb') as output_file:
-        output_file.write(set_source.encode('utf8'))
-        set_number += 1
-
+scrape_matches_from_edition(browser, 2018, "australian-open")
 browser.quit()
