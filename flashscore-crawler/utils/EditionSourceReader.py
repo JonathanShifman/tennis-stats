@@ -3,14 +3,9 @@ from bs4 import BeautifulSoup
 import time
 
 
-def get_source(browser, url):
-    browser.get(url)
-    return browser.page_source
-
-
 def get_tab_source(browser, edition_string, tab_name):
     url = Utils.get_edition_url(edition_string) + tab_name + '/'
-    return get_source(browser, url)
+    return Utils.get_source(browser, url)
 
 
 def get_show_more_matches_link(browser):
@@ -66,14 +61,14 @@ def get_bubble_suffixes(soup):
 def get_bracket_sources_from_tab_source(browser, tab_source, tab_url):
     tab_soup = BeautifulSoup(tab_source, "html.parser")
     bubble_suffixes = get_bubble_suffixes(tab_soup)
-    bracket_sources = [get_source(browser, tab_url + bubble_suffix) for bubble_suffix in bubble_suffixes]
+    bracket_sources = [Utils.get_source(browser, tab_url + bubble_suffix) for bubble_suffix in bubble_suffixes]
     return bracket_sources
 
 
 def get_bracket_sources(browser, edition_string):
     edition_url = Utils.get_edition_url(edition_string)
-    draw_source = get_source(browser, edition_url + "draw")
-    standings_source = get_source(browser, edition_url + "standings")
+    draw_source = Utils.get_source(browser, edition_url + "draw")
+    standings_source = Utils.get_source(browser, edition_url + "standings")
     relevant_tab_name, relevant_tab_source = determine_relevant_tab_source(draw_source, standings_source)
     relevant_tab_url = edition_url + relevant_tab_name + "/"
     return get_bracket_sources_from_tab_source(browser, relevant_tab_source, relevant_tab_url)
