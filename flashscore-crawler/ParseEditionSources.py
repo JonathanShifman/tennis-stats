@@ -57,8 +57,7 @@ def parse_edition(year, tournament_name):
     edition = Edition()
     dir_name = "output/editions/" + str(year) + "," + tournament_name + "/"
     if not os.path.exists(dir_name):
-        # raise Exception("Sources dir not found")
-        return
+        raise Exception("Sources dir not found")
     if os.path.exists(dir_name + "edition.pkl"):
         return
     bracket_file_names = [file_name for file_name in os.listdir(dir_name) if "bracket" in file_name]
@@ -77,7 +76,6 @@ with open('resources/tournament-names.txt', 'r') as f:
 
 for tournament_name in tournament_names:
     try:
-        parse_edition(str(2018), tournament_name)
+        parse_edition(str(2019), tournament_name)
     except Exception as e:
-        print("Failed to parse edition: " + e.message)
-        traceback.print_exc()
+        print("Failed to parse edition: " + str(2019) + " " + tournament_name)

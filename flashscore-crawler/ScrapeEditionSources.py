@@ -6,10 +6,10 @@ import traceback
 
 with open('resources/tournament-names.txt', 'r') as f:
     tournament_names = [tournament_name.strip() for tournament_name in f.readlines()]
-    # tournament_names = ['acapulco']
+    # tournament_names = ['cordoba']
 
 browser = webdriver.Chrome()
-for year in range(2018, 2019):
+for year in range(2019, 2020):
     for tournament_name in tournament_names:
         dir_name = str(year) + "," + tournament_name
         dir_path = 'output/editions/' + dir_name + '/'

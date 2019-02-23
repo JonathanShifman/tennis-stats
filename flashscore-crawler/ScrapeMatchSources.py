@@ -6,16 +6,22 @@ import time
 
 
 def scrape_match(browser, match_id):
-    summary_source, history_source = MatchSourceReader.get_match_sources(browser, match_id)
     dir_path = 'output/matches/' + match_id + '/'
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
+    else:
+        if os.path.exists(dir_path + 'summary.txt') and os.path.exists(dir_path + 'history.txt'):
+            print("Match has already been scraped")
+            return False
+    summary_source, history_source = MatchSourceReader.get_match_sources(browser, match_id)
 
     with open(dir_path + 'summary.txt', 'wb') as output_file:
         output_file.write(summary_source.encode('utf8'))
 
     with open(dir_path + 'history.txt', 'wb') as output_file:
         output_file.write(history_source.encode('utf8'))
+
+    return True
 
 
 def scrape_matches_from_edition(browser, year, tournament_name):
@@ -24,10 +30,12 @@ def scrape_matches_from_edition(browser, year, tournament_name):
     for bracket in edition.brackets:
         for edition_round in bracket.rounds:
             for match_id in edition_round.match_ids:
-                scrape_match(browser, match_id)
-                time.sleep(3)
+                print("Scraping match " + match_id)
+                scraped_match = scrape_match(browser, match_id)
+                if scraped_match:
+                    time.sleep(5)
 
 
 browser = webdriver.Chrome()
-scrape_matches_from_edition(browser, 2018, "australian-open")
+scrape_matches_from_edition(browser, 2019, "brisbane")
 browser.quit()
