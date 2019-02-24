@@ -1,0 +1,63 @@
+.stat {
+    grid-column: span 4;
+    border: 1.5px solid white;
+    box-sizing: border-box;
+    padding: 12px;
+    min-height: 160px;
+}
+
+
+/* Stat header */
+.stat-header {
+    display: flex;
+    justify-content: space-between;
+}
+.stat-player-wrapper {
+    display: flex;
+}
+.stat-player-flag img {
+    height: 24px;
+    width: auto;
+    display: block;
+}
+.stat-player-name {
+    margin-left: 8px;
+    font-size: 1em;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+.stat-kind-icon {
+    margin-right: 8px;
+}
+.stat-kind-icon img {
+    height: 24px;
+    width: auto;
+    display: block;
+}
+
+/* Stat content */
+.stat-content {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+    padding: 6px 18px;
+}
+.stat-number {
+    flex-shrink: 0;
+    width: 100px;
+    height: 100px;
+    border: 2px solid white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5em;
+
+}
+.stat-text {
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    letter-spacing: 0.8px;
+}

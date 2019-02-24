@@ -8,7 +8,7 @@ class App extends Component {
         super(props);
         this.state = {
             selectedNavItemId: 0,
-            content: null,
+            content: <Grid/>,
         };
 
         this.selectNavItem = this.selectNavItem.bind(this);
@@ -17,7 +17,7 @@ class App extends Component {
     render() {
         return (
             <Fragment>
-                <Nav onNavItemSelected={this.selectNavItem} selectedNavItemId={this.state.selectedNavItemId} />
+                {/*<Nav onNavItemSelected={this.selectNavItem} selectedNavItemId={this.state.selectedNavItemId} />*/}
                 { this.state.content }
             </Fragment>
         );

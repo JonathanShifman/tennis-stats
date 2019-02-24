@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import './Grid.css';
+import Stat from '../stat/Stat'
 
 class Grid extends Component {
   render() {
     return (
-        <span>Grid</span>
+        <div id={'stats-grid'}>
+            <Stat />
+            <Stat />
+            <Stat />
+            <Stat />
+        </div>
     );
   }
 }
