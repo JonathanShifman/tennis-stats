@@ -47,8 +47,6 @@
     flex-shrink: 0;
     width: 100px;
     height: 100px;
-    border: 2px solid white;
-    border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -57,7 +55,12 @@
 }
 .stat-text {
     display: flex;
+    flex: 1;
     align-items: center;
-    padding: 0 24px;
+    padding-left: 24px;
     letter-spacing: 0.8px;
+}
+
+.progressbar-text {
+    color: white;
 }

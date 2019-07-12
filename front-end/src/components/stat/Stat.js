@@ -2,9 +2,16 @@ import React, { Component } from 'react';
 import './Stat.css';
 import flag from '../../assets/flags/sui.jpg';
 import star from '../../assets/icons/star.png';
+import func from './circle';
 
 class Stat extends Component {
-  render() {
+    componentDidMount() {
+        func(this.props.num);
+        // var circle = new ProgressBar.Circle('#progress');
+        // circle.animate(1);
+    }
+
+    render() {
     return (
         <div className={'stat'}>
             <div className={'stat-header'}>
@@ -22,9 +29,11 @@ class Stat extends Component {
             </div>
 
             <div className={'stat-content'}>
-                <div className={'stat-number'}>71</div>
+                <div className={'stat-number'} id={'progress' + this.props.num}>
+                    {/*71*/}
+                </div>
                 <div className={'stat-text'}>
-                    Roger Federer has won 71% of points behind his first serve.
+                    71% of points won behind first serve
                 </div>
             </div>
         </div>

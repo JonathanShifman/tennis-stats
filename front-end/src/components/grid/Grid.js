@@ -6,10 +6,10 @@ class Grid extends Component {
   render() {
     return (
         <div id={'stats-grid'}>
-            <Stat />
-            <Stat />
-            <Stat />
-            <Stat />
+            <Stat num={1} />
+            <Stat num={2} />
+            <Stat num={3} />
+            <Stat num={4} />
         </div>
     );
   }
