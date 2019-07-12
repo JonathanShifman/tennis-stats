@@ -1,14 +1,16 @@
 from selenium import webdriver
 from utils import Utils
 from bs4 import BeautifulSoup
+from Tournament import Tournament
 import traceback
 import time
+import pickle
 
 
-def get_period_str(start, end):
+def get_period(start, end):
     if start == end:
-        return str(start)
-    return str(start) + "-" + str(end)
+        return [start]
+    return [start, end]
 
 
 def get_periods(browser, tournament_name):
@@ -21,18 +23,15 @@ def get_periods(browser, tournament_name):
     if len(archive_div_elements) != 1:
         raise Exception("Unexpected page structure")
 
-    edition_row_elements = archive_div_elements[0].find("tbody").find_all("tr")
-    if len(edition_row_elements) == 0:
+    edition_div_elements = archive_div_elements[0].find_all("div", {"class": "leagueTable__season"})[1:]
+    if len(edition_div_elements) == 0:
         raise Exception("No editions found")
 
     current_period_end = None
     last_encountered_year = None
     periods = []
-    for edition_row_element in edition_row_elements:
-        td_elements = edition_row_element.find_all("td")
-        if len(td_elements) > 2:
-            raise Exception("Unexpected page structure")
-        year = int(td_elements[0].find("a").text.split(" ")[-1])
+    for edition_div_element in edition_div_elements:
+        year = int(edition_div_element.find("a").text.split(" ")[-1])
 
         if current_period_end is None:
             current_period_end = year
@@ -43,10 +42,10 @@ def get_periods(browser, tournament_name):
             elif last_encountered_year - year == 1:
                 last_encountered_year = year
             else:
-                periods.append(get_period_str(last_encountered_year, current_period_end))
+                periods.append(get_period(last_encountered_year, current_period_end))
                 current_period_end = year
                 last_encountered_year = year
-    periods.append(get_period_str(last_encountered_year, current_period_end))
+    periods.append(get_period(last_encountered_year, current_period_end))
 
     return periods
 
@@ -55,20 +54,15 @@ with open('resources/tournament-names.txt', 'r') as f:
     tournament_names = [tournament_name.strip() for tournament_name in f.readlines()]
 
 browser = webdriver.Chrome()
-output_lines = []
+tournaments = []
 for tournament_name in tournament_names:
     try:
         periods = get_periods(browser, tournament_name)
-        output_line = tournament_name + "," + ",".join(periods)
-        output_lines.append(output_line)
-        print(output_line)
+        tournaments.append(Tournament(tournament_name, periods))
     except Exception as e:
         print("Failed to read relevant years for " + tournament_name + ": " + e.message)
         traceback.print_exc()
     time.sleep(5)
 browser.quit()
-
-with open("resources/periods_output.txt", "w") as output_file:
-    for line in output_lines:
-        output_file.write(line + "\n")
+pickle.dump(tournaments, open('output/periods.pkl', 'wb'))
 

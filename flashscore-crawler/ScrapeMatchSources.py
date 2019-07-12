@@ -31,11 +31,15 @@ def scrape_matches_from_edition(browser, year, tournament_name):
         for edition_round in bracket.rounds:
             for match_id in edition_round.match_ids:
                 print("Scraping match " + match_id)
-                scraped_match = scrape_match(browser, match_id)
-                if scraped_match:
+                should_wait = True
+                try:
+                    should_wait = scrape_match(browser, match_id)
+                except:
+                    print("Failed to scrape match")
+                if should_wait:
                     time.sleep(5)
 
 
 browser = webdriver.Chrome()
-scrape_matches_from_edition(browser, 2019, "brisbane")
+scrape_matches_from_edition(browser, 2019, "rio-de-janeiro")
 browser.quit()
