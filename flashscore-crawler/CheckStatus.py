@@ -11,7 +11,7 @@ def year_in_period(year, period):
 
 
 tournaments = pickle.load(open('resources/periods.pkl', 'rb'))
-year = 2019
+year = 2018
 for tournament in tournaments:
     if year_in_period(year, tournament.periods[0]):
         print(tournament.name)

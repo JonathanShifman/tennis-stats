@@ -28,5 +28,5 @@ for element in relevant_elements:
     if len(split_path) == 5:
         lines.append(str(split_path[3] + '\n'))
 
-with open('tournament-names.txt', 'wb') as f:
+with open('output/tournament-names.txt', 'wb') as f:
     f.writelines(lines)

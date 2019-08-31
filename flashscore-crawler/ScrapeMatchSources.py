@@ -41,5 +41,5 @@ def scrape_matches_from_edition(browser, year, tournament_name):
 
 
 browser = webdriver.Chrome()
-scrape_matches_from_edition(browser, 2019, "rio-de-janeiro")
+scrape_matches_from_edition(browser, 2018, "antwerp")
 browser.quit()
