@@ -60,5 +60,5 @@ else:
     year = int(sys.argv[2])
 
 browser = Utils.get_browser()
-scrape_matches_from_edition(browser, 2018, "antwerp")
+scrape_matches_from_edition(browser, year, tournament_name)
 browser.quit()
