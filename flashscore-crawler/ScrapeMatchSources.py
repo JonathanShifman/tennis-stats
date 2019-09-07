@@ -2,6 +2,7 @@ from utils import MatchSourceReader, Utils
 import os
 import pickle
 import time
+import sys
 
 
 def scrape_match(browser, match_id):
@@ -24,6 +25,7 @@ def scrape_match(browser, match_id):
 
 
 def scrape_matches_from_edition(browser, year, tournament_name):
+    print("Scraping " + tournament_name + " " + str(year))
     edition_dir_name = str(year) + "," + tournament_name
     edition = pickle.load(open("output/editions/" + edition_dir_name + "/edition.pkl", "rb"))
 
@@ -47,6 +49,15 @@ def scrape_matches_from_edition(browser, year, tournament_name):
             time.sleep(5)
         current += 1
 
+
+if len(sys.argv) < 2:
+    print ('No tournament chosen')
+    exit(1)
+tournament_name = sys.argv[1]
+if len(sys.argv) < 3:
+    year = 2019
+else:
+    year = int(sys.argv[2])
 
 browser = Utils.get_browser()
 scrape_matches_from_edition(browser, 2018, "antwerp")
