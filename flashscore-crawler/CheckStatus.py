@@ -22,7 +22,11 @@ for tournament in tournaments:
         edition = pickle.load(open(edition_pkl_path, 'rb'))
         match_ids = edition.get_match_ids()
         scraped_matches_counter = 0
+        missing_matches = []
         for match_id in match_ids:
             if os.path.exists('output/matches/' + match_id + '/history.txt'):
                 scraped_matches_counter += 1
+            else:
+                missing_matches.append(match_id)
         print(str(scraped_matches_counter) + "/" + str(len(match_ids)))
+        # print(missing_matches)
