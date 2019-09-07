@@ -1,12 +1,12 @@
 from classes.MatchHistory import MatchHistory
 import SetParser
-from selenium import webdriver
+from utils import Utils
 from bs4 import BeautifulSoup
 
 
 def parse_match(match_hash):
     match_url = 'https://www.flashscore.com/match/' + match_hash + '/#point-by-point'
-    browser = webdriver.Chrome()
+    browser = Utils.get_browser()
     browser.get(match_url)
     match_source = BeautifulSoup(browser.page_source, 'html.parser')
 

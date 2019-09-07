@@ -1,5 +1,4 @@
-from utils import MatchSourceReader
-from selenium import webdriver
+from utils import MatchSourceReader, Utils
 import os
 import pickle
 import time
@@ -40,6 +39,6 @@ def scrape_matches_from_edition(browser, year, tournament_name):
                     time.sleep(5)
 
 
-browser = webdriver.Chrome()
+browser = Utils.get_browser()
 scrape_matches_from_edition(browser, 2018, "antwerp")
 browser.quit()

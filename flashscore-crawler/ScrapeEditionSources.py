@@ -2,7 +2,6 @@ import pickle
 
 from utils import EditionSourceReader, Utils
 import time
-from selenium import webdriver
 import os
 import traceback
 
@@ -22,7 +21,7 @@ def year_in_tournament_periods(year, tournament):
 
 
 tournaments = pickle.load(open('resources/periods.pkl', 'rb'))
-browser = webdriver.Chrome()
+browser = Utils.get_browser()
 for year in range(2018, 2019):
     for tournament in tournaments:
         if year_in_tournament_periods(year, tournament):

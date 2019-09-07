@@ -1,4 +1,3 @@
-from selenium import webdriver
 from utils import Utils
 import traceback
 import time
@@ -12,7 +11,7 @@ def scrape_tournament_archive(browser, tournament_name):
 with open('resources/tournament-names.txt', 'r') as f:
     tournament_names = [tournament_name.strip() for tournament_name in f.readlines()]
 
-browser = webdriver.Chrome()
+browser = Utils.get_browser()
 for tournament_name in tournament_names:
     try:
         print("Scraping archive source for: " + tournament_name)

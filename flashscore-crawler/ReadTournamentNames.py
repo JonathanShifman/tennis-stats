@@ -1,5 +1,5 @@
-from selenium import webdriver
 from bs4 import BeautifulSoup
+from utils import Utils
 
 # FIXME
 '''
@@ -10,10 +10,7 @@ Includes all tournaments without filtering (Davis cup for example)
 
 def get_source():
     edition_results_url = 'https://www.flashscore.com/tennis/'
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument('--no-sandbox')
-    chrome_options.add_argument('headless')
-    browser = webdriver.Chrome(chrome_options=chrome_options)
+    browser = Utils.get_browser()
     browser.get(edition_results_url)
     page_source = BeautifulSoup(browser.page_source, 'html.parser')
     browser.quit()
