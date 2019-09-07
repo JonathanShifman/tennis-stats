@@ -10,7 +10,10 @@ Includes all tournaments without filtering (Davis cup for example)
 
 def get_source():
     edition_results_url = 'https://www.flashscore.com/tennis/'
-    browser = webdriver.Chrome()
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('headless')
+    browser = webdriver.Chrome(chrome_options=chrome_options)
     browser.get(edition_results_url)
     page_source = BeautifulSoup(browser.page_source, 'html.parser')
     browser.quit()
