@@ -37,7 +37,7 @@ def scrape_matches_from_edition(browser, year, tournament_name):
     current = 1
     print('Total matches to scrape: ' + str(total))
     for match_id in match_ids:
-        print("Scraping match " + match_id + "[" + str(current) + "/" + str(total) + "]")
+        print("Scraping match " + match_id + " [" + str(current) + "/" + str(total) + "]")
         should_wait = True
         try:
             should_wait = scrape_match(browser, match_id)
@@ -45,6 +45,7 @@ def scrape_matches_from_edition(browser, year, tournament_name):
             print("Failed to scrape match")
         if should_wait:
             time.sleep(5)
+        current += 1
 
 
 browser = Utils.get_browser()
