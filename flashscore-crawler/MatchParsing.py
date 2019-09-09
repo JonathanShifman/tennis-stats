@@ -1,7 +1,7 @@
 import os
 from bs4 import BeautifulSoup
 import pickle
-from classes.MatchHistory import MatchHistory
+from classes.Match import Match
 
 
 def parse_match(match_id):
@@ -13,9 +13,18 @@ def parse_match(match_id):
     with open(history_file_path, 'r') as history_file:
         soup = BeautifulSoup(history_file.read().decode("utf-8"), "html.parser")
 
-    history = MatchHistory()
-    pickle.dump(history, open('output/matches/' + match_id + '/match.pkl', "wb"))
+    identity_elements = soup.find_all("a", {"class": "participant-imglink"})
+    player1_id = str(identity_elements[0]["onclick"].split('/')[-1].split('\'')[0])
+    player2_id = str(identity_elements[2]["onclick"].split('/')[-1].split('\'')[0])
 
+    score_row_elements = soup.find_all("tr", {"class": "fifteen"})
+    game_scores = [str(element.find('td').text).replace('BP', '').replace('SP', '').replace('MP', '').split(', ')
+                   for element in score_row_elements]
+
+    match = Match(player1_id, player2_id)
+    match.game_scores = game_scores
+
+    pickle.dump(match, open('output/matches/' + match_id + '/match.pkl', "wb"))
 
 
 def parse_edition_matches(year, tournament_name):
