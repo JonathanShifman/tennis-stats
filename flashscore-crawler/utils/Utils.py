@@ -38,3 +38,9 @@ def get_archive_url(tournament_name):
 
 def print_divider():
     print("---------------------------------")
+
+
+def get_tournament_names():
+    with open('resources/tournament-names.txt', 'r') as f:
+        tournament_names = [tournament_name.strip() for tournament_name in f.readlines()]
+    return tournament_names

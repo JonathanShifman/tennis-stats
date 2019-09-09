@@ -4,7 +4,6 @@ from classes.Edition import Edition
 from classes.Bracket import Bracket
 from classes.Round import Round
 import pickle
-import traceback
 
 
 def get_match_id(match_element):
@@ -68,14 +67,3 @@ def parse_edition(year, tournament_name):
             bracket = parse_bracket(soup)
             edition.brackets.append(bracket)
     pickle.dump(edition, open(dir_name + "edition.pkl", "wb"))
-
-
-with open('resources/tournament-names.txt', 'r') as f:
-    tournament_names = [tournament_name.strip() for tournament_name in f.readlines()]
-    # tournament_names = ["antalya"]
-
-for tournament_name in tournament_names:
-    try:
-        parse_edition(str(2019), tournament_name)
-    except Exception as e:
-        print("Failed to parse edition: " + str(2019) + " " + tournament_name)
