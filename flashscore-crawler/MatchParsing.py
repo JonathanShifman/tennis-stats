@@ -1,6 +1,7 @@
 import os
 from bs4 import BeautifulSoup
 import pickle
+from classes.MatchHistory import MatchHistory
 
 
 def parse_match(match_id):
@@ -11,10 +12,14 @@ def parse_match(match_id):
 
     with open(history_file_path, 'r') as history_file:
         soup = BeautifulSoup(history_file.read().decode("utf-8"), "html.parser")
-        a = 1
+
+    history = MatchHistory()
+    pickle.dump(history, open('output/matches/' + match_id + '/match.pkl', "wb"))
 
 
-def parse_matches_from_edition(year, tournament_name):
+
+def parse_edition_matches(year, tournament_name):
+    print('Parsing edition: ' + tournament_name + ' ' + str(year))
     edition_dir_name = str(year) + "," + tournament_name
     pickle_path = "output/editions/" + edition_dir_name + "/edition.pkl"
     if not os.path.exists(pickle_path):

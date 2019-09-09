@@ -1,4 +1,3 @@
-from Tournament import Tournament
 import pickle
 import os
 
