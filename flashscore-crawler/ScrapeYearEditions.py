@@ -5,6 +5,7 @@ import time
 import os
 import sys
 import PeriodFilter
+import traceback
 
 
 year = 2019
@@ -40,7 +41,7 @@ for tournament in tournaments:
                 output_file.write(bracket_source.encode('utf8'))
             bracket_serial_number += 1
     except Exception as e:
-        print ("Failed to scrape " + str(year) + " " + tournament.name + ": " + e.message)
+        print ("Failed to scrape " + str(year) + " " + tournament.name + ": " + traceback.print_exc(file=sys.stdout))
         # traceback.print_exc()
 
     Utils.print_divider()
