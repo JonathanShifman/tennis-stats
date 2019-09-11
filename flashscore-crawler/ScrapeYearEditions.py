@@ -18,7 +18,7 @@ for tournament in tournaments:
     print("Scraping " + str(year) + " " + tournament.name)
     dir_name = str(year) + "," + tournament.name
     dir_path = 'output/editions/' + dir_name + '/'
-    if os.path.exists(dir_path + 'edition.pkl'):
+    if os.path.exists(dir_path + 'bracket1.txt'):
         print("Edition has already been scraped")
         Utils.print_divider()
         continue

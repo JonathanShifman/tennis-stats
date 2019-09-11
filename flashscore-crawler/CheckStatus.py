@@ -1,5 +1,6 @@
 import pickle
 import os
+import sys
 
 
 def year_in_period(year, period):
@@ -10,7 +11,10 @@ def year_in_period(year, period):
 
 
 tournaments = pickle.load(open('resources/periods.pkl', 'rb'))
-year = 2018
+year = 2019
+if len(sys.argv) > 1:
+    year = int(sys.argv[1])
+
 print_missing = False
 for tournament in tournaments:
     if year_in_period(year, tournament.periods[0]):
