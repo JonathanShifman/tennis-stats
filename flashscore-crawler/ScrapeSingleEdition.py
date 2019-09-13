@@ -12,7 +12,7 @@ else:
     year = int(sys.argv[2])
 
 
-browser = Utils.get_browser()
+browser = Utils.get_browser(True)
 print("Scraping " + str(year) + " " + tournament_name)
 dir_name = str(year) + "," + tournament_name
 dir_path = 'output/editions/' + dir_name + '/'

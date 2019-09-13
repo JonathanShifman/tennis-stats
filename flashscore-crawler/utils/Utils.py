@@ -1,5 +1,6 @@
 from utils import PageEnforcer
 from selenium import webdriver
+import datetime
 
 
 domain = "https://www.flashscore.com/"
@@ -45,3 +46,7 @@ def get_tournament_names():
     with open('resources/tournament-names.txt', 'r') as f:
         tournament_names = [tournament_name.strip() for tournament_name in f.readlines()]
     return tournament_names
+
+
+def get_time_prefix():
+    return datetime.datetime.now().strftime("%H:%M:%S") + ' - '
