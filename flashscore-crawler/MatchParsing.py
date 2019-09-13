@@ -17,6 +17,12 @@ def parse_match(match_id):
     player1_id = str(identity_elements[0]["onclick"].split('/')[-1].split('\'')[0])
     player2_id = str(identity_elements[2]["onclick"].split('/')[-1].split('\'')[0])
 
+    serve_elements = soup.find_all("td", {"class": "server"})
+    if len(serve_elements[0].find_all("div", {"class": "icon-box"})) > 0:
+        server = 1
+    else:
+        server = 2
+
     score_row_elements = soup.find_all("tr", {"class": "fifteen"})
     game_scores = [str(element.find('td').text)
                        .replace('BP', '')
@@ -26,7 +32,7 @@ def parse_match(match_id):
                        .split(', ')
                    for element in score_row_elements]
 
-    match = Match(player1_id, player2_id)
+    match = Match(player1_id, player2_id, server)
     match.game_scores = game_scores
 
     pickle.dump(match, open('output/matches/' + match_id + '/match.pkl', "wb"))

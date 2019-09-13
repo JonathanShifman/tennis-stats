@@ -14,6 +14,7 @@ tournaments = pickle.load(open('resources/periods.pkl', 'rb'))
 # years = [2017, 2018, 2019]
 years = [2018]
 player_id = 'Gz6r1gS0'
+on_serve = True
 
 keys = ['0:0', '15:0', '0:15', '30:0', '15:15', '0:30', '40:0', '30:15',
         '15:30', '0:40', '40:15', '30:30', '15:40', '40:30', '30:40', '40:40', '50:40', '40:50']
@@ -46,15 +47,44 @@ for year in years:
                     matches_with_pkl += 1
                     match = pickle.load(open(match_pkl_path, 'rb'))
                     if match.player1_id == player_id or match.player2_id == player_id:
+                        if match.player1_id == player_id:
+                            player_side = 1
+                        else:
+                            player_side = 2
                         relevant_matches += 1
+                        server_side = match.server
+                        current_game_id = 1
                         for game in match.game_scores:
-                            current_score = '0:0'
-                            for new_score in game:
+                            if (on_serve and server_side == player_side) or ((not on_serve) and server_side != player_side):
+                                if server_side == 2:
+                                    for i in range(len(game)):
+                                        score = game[i]
+                                        split_score = score.split(':')
+                                        reversed_score = split_score[1] + ':' + split_score[0]
+                                        game[i] = reversed_score
+
+                                current_score = '0:0'
+                                for new_score in game:
+                                    current1 = int(current_score.split(':')[0])
+                                    current2 = int(current_score.split(':')[1])
+                                    new1 = int(new_score.split(':')[0])
+                                    new2 = int(new_score.split(':')[1])
+                                    if new1 > current1 or new2 < current2:
+                                        # player 1 won
+                                        if match.player1_id == player_id:
+                                            won[current_score] += 1
+                                        else:
+                                            lost[current_score] += 1
+                                    else:
+                                        # player 2 won
+                                        if match.player1_id == player_id:
+                                            lost[current_score] += 1
+                                        else:
+                                            won[current_score] += 1
+                                    current_score = new_score
                                 current1 = int(current_score.split(':')[0])
                                 current2 = int(current_score.split(':')[1])
-                                new1 = int(new_score.split(':')[0])
-                                new2 = int(new_score.split(':')[1])
-                                if new1 > current1 or new2 < current2:
+                                if current1 > current2:
                                     # player 1 won
                                     if match.player1_id == player_id:
                                         won[current_score] += 1
@@ -66,21 +96,9 @@ for year in years:
                                         lost[current_score] += 1
                                     else:
                                         won[current_score] += 1
-                                current_score = new_score
-                            current1 = int(current_score.split(':')[0])
-                            current2 = int(current_score.split(':')[1])
-                            if current1 > current2:
-                                # player 1 won
-                                if match.player1_id == player_id:
-                                    won[current_score] += 1
-                                else:
-                                    lost[current_score] += 1
-                            else:
-                                # player 2 won
-                                if match.player1_id == player_id:
-                                    lost[current_score] += 1
-                                else:
-                                    won[current_score] += 1
+                            server_side = 3 - server_side
+                            current_game_id += 1
+
             print(str(year) + ' ' + tournament.name + ': ' + str(relevant_matches) + ' ' + str(matches_with_pkl))
 
 print(total_matches)
