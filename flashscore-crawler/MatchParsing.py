@@ -18,7 +18,12 @@ def parse_match(match_id):
     player2_id = str(identity_elements[2]["onclick"].split('/')[-1].split('\'')[0])
 
     score_row_elements = soup.find_all("tr", {"class": "fifteen"})
-    game_scores = [str(element.find('td').text).replace('BP', '').replace('SP', '').replace('MP', '').split(', ')
+    game_scores = [str(element.find('td').text)
+                       .replace('BP', '')
+                       .replace('SP', '')
+                       .replace('MP', '')
+                       .replace('A', '50')
+                       .split(', ')
                    for element in score_row_elements]
 
     match = Match(player1_id, player2_id)
