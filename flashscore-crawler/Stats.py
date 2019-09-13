@@ -13,7 +13,7 @@ def year_in_period(year, period):
 tournaments = pickle.load(open('resources/periods.pkl', 'rb'))
 # years = [2017, 2018, 2019]
 years = [2018]
-player_id = 'Gz6r1gS0'
+player_id = 'GrsQDFC0'
 on_serve = True
 
 keys = ['0:0', '15:0', '0:15', '30:0', '15:15', '0:30', '40:0', '30:15',
@@ -52,9 +52,11 @@ for year in years:
                         else:
                             player_side = 2
                         relevant_matches += 1
-                        server_side = match.server
+                        print(match_id)
                         current_game_id = 1
-                        for game in match.game_scores:
+                        for i in range(len(match.game_scores)):
+                            game = match.game_scores[i]
+                            server_side = match.servers[i]
                             if (on_serve and server_side == player_side) or ((not on_serve) and server_side != player_side):
                                 if server_side == 2:
                                     for i in range(len(game)):
@@ -70,14 +72,14 @@ for year in years:
                                     new1 = int(new_score.split(':')[0])
                                     new2 = int(new_score.split(':')[1])
                                     if new1 > current1 or new2 < current2:
-                                        # player 1 won
-                                        if match.player1_id == player_id:
+                                        # server won
+                                        if player_side == server_side:
                                             won[current_score] += 1
                                         else:
                                             lost[current_score] += 1
                                     else:
-                                        # player 2 won
-                                        if match.player1_id == player_id:
+                                        # receiver won
+                                        if player_side == server_side:
                                             lost[current_score] += 1
                                         else:
                                             won[current_score] += 1
@@ -85,18 +87,17 @@ for year in years:
                                 current1 = int(current_score.split(':')[0])
                                 current2 = int(current_score.split(':')[1])
                                 if current1 > current2:
-                                    # player 1 won
-                                    if match.player1_id == player_id:
+                                    # server won
+                                    if player_side == server_side:
                                         won[current_score] += 1
                                     else:
                                         lost[current_score] += 1
                                 else:
-                                    # player 2 won
-                                    if match.player1_id == player_id:
+                                    # receiver won
+                                    if player_side == server_side:
                                         lost[current_score] += 1
                                     else:
                                         won[current_score] += 1
-                            server_side = 3 - server_side
                             current_game_id += 1
 
             print(str(year) + ' ' + tournament.name + ': ' + str(relevant_matches) + ' ' + str(matches_with_pkl))
@@ -104,4 +105,5 @@ for year in years:
 print(total_matches)
 
 for key in keys:
-    print(key + ' - ' + str(won[key]) + '/' + str(won[key] + lost[key]))
+    percentage = "{0:.2f}".format(100 * float(won[key]) / float(won[key] + lost[key]))
+    print(key + ' - ' + str(won[key]) + '/' + str(won[key] + lost[key]) + ' [' + percentage + ']')

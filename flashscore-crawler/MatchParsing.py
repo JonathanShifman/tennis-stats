@@ -13,15 +13,19 @@ def parse_match(match_id):
     with open(history_file_path, 'r') as history_file:
         soup = BeautifulSoup(history_file.read().decode("utf-8"), "html.parser")
 
-    identity_elements = soup.find_all("a", {"class": "participant-imglink"})
-    player1_id = str(identity_elements[0]["onclick"].split('/')[-1].split('\'')[0])
-    player2_id = str(identity_elements[2]["onclick"].split('/')[-1].split('\'')[0])
+    player1_element = soup.find("div", {"class": "home-box"}).find_all("a", {"class": "participant-imglink"})[0]
+    player2_element = soup.find("div", {"class": "away-box"}).find_all("a", {"class": "participant-imglink"})[0]
+    player1_id = str(player1_element["onclick"].split('/')[-1].split('\'')[0])
+    player2_id = str(player2_element["onclick"].split('/')[-1].split('\'')[0])
 
-    serve_elements = soup.find_all("td", {"class": "server"})
-    if len(serve_elements[0].find_all("div", {"class": "icon-box"})) > 0:
-        server = 1
-    else:
-        server = 2
+    server_elements = soup.find_all("tr", {"class": "fifteens_available"})
+    servers = []
+    for server_element in server_elements:
+        serve_elements = server_element.find_all("td", {"class": "server"})
+        if len(serve_elements[0].find_all("div", {"class": "icon-box"})) > 0:
+            servers.append(1)
+        else:
+            servers.append(2)
 
     score_row_elements = soup.find_all("tr", {"class": "fifteen"})
     game_scores = [str(element.find('td').text)
@@ -32,7 +36,7 @@ def parse_match(match_id):
                        .split(', ')
                    for element in score_row_elements]
 
-    match = Match(player1_id, player2_id, server)
+    match = Match(player1_id, player2_id, servers)
     match.game_scores = game_scores
 
     pickle.dump(match, open('output/matches/' + match_id + '/match.pkl', "wb"))
