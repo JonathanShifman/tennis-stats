@@ -4,15 +4,15 @@ import PeriodFilter
 
 
 tournaments = pickle.load(open('resources/periods.pkl', 'rb'))
+matches_file_path = "resources/matches.txt"
 
-# years = [2017, 2018, 2019]
 years = [2017, 2018, 2019]
 
 # player_id = 'GrsQDFC0' # Federer
 # player_id = 'xUwlUnRK' # Nadal
 # player_id = 'AZg49Et9' # Djokovic
-player_id = 'GrsQDFC0'
-on_serve = True
+player_id = 'AZg49Et9'
+on_serve = False
 
 keys = ['0:0', '15:0', '0:15', '30:0', '15:15', '0:30', '40:0', '30:15',
         '15:30', '0:40', '40:15', '30:30', '15:40', '40:30', '30:40', '40:40', '50:40', '40:50', 'deuce', 'ad']
@@ -105,6 +105,12 @@ for year in years:
     tournaments_in_year = PeriodFilter.filter_tournaments_by_year(tournaments, year)
     for tournament in tournaments_in_year:
         process_tournament(year, tournament)
+
+with open(matches_file_path, 'r') as f:
+    match_ids = [match_id.strip() for match_id in f.readlines()]
+
+for match_id in match_ids:
+    process_match(match_id)
 
 for key in keys:
     percentage = "{0:.2f}".format(100 * float(won[key]) / float(won[key] + lost[key]))
