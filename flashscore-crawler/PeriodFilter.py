@@ -11,6 +11,7 @@ def year_in_tournament_periods(year, tournament):
             return True
     return False
 
+
 def filter_tournaments_by_year(tournaments, year):
     filtered = []
     for tournament in tournaments:
