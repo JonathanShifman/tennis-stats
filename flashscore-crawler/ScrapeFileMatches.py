@@ -3,9 +3,13 @@ import time
 from utils import Utils
 import MatchScraping
 
+if len(sys.argv) < 2:
+    print('No file chosen')
+    exit(0)
+
 file_name = sys.argv[1]
 with open(file_name, 'r') as f:
-    match_ids = f.readlines()
+    match_ids = [match_id.strip() for match_id in f.readlines()]
 
 browser = Utils.get_browser()
 current = 1

@@ -6,7 +6,7 @@ import PeriodFilter
 tournaments = pickle.load(open('resources/periods.pkl', 'rb'))
 
 # years = [2017, 2018, 2019]
-years = [2018]
+years = [2017, 2018, 2019]
 
 # player_id = 'GrsQDFC0' # Federer
 # player_id = 'xUwlUnRK' # Nadal
